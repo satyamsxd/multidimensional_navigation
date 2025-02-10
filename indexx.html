@@ -29,17 +29,18 @@
   <link rel="stylesheet" href="indexx.css">
 </head>
 <body>
- 
- 
+    
   
   <div id="instructions">
     <span style="font-size: 20px">Click to start exploring</span><br/>
     <span>Move: WASD or Arrow Keys</span><br/>
     <span>Move along 4th Dimension: Q/E</span><br/>
     <span>Look: Mouse</span><br/><br/>
-    <span style="font-size: 16px; color: #ccc;">Click to begin.</span>
+    <span style="font-size: 16px; color: #f2ff00;">Click to start</span>
   </div>
+
   <canvas id="renderCanvas"></canvas>
+  <script src="indexx.js"></script>
 
   <!-- Include Babylon.js from CDN -->
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
@@ -112,6 +113,7 @@
           break;
       }
     };
+    
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);

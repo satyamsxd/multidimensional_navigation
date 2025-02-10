@@ -8,4 +8,23 @@ document.getElementById('instructions').addEventListener('click', () => {
                                 canvas.webkitRequestPointerLock;
     canvas.requestPointerLock();
   });
+  function isPointInsideAABB(point, box) {
+    return (
+      point.x >= box.minX &&
+      point.x <= box.maxX &&
+      point.y >= box.minY &&
+      point.y <= box.maxY &&
+      point.z >= box.minZ &&
+      point.z <= box.maxZ
+    );
+  }
+  function intersect(sphere, other) {
+    // we are using multiplications because it's faster than calling Math.pow
+    const distance = Math.sqrt(
+      (sphere.x - other.x) * (sphere.x - other.x) +
+        (sphere.y - other.y) * (sphere.y - other.y) +
+        (sphere.z - other.z) * (sphere.z - other.z),
+    );
+    return distance < sphere.radius + other.radius;
+  }
   
