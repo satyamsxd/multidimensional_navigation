@@ -1,274 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Multidimensional Navigation</title>
+  <meta charset="UTF-8">
+  <title>Babylon.js Navigation</title>
   <style>
     body {
       margin: 0;
       overflow: hidden;
       font-family: Arial, sans-serif;
     }
-    #blocker {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(185, 28, 28, 0.5);
-    }
     #instructions {
-      width: 100%; height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      color: #ffffff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      padding: 20px;
+      border-radius: 10px;
       text-align: center;
-      cursor: pointer;
+    }
+    #renderCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <div id="blocker">
-    <div id="instructions">
-      <span style="font-size:40px">Click to play</span>
-      <br />
-      <span>Move: WASD or Arrow Keys</span><br/>
-      <span>Move along 4th Dimension: Q/E</span><br/>
-      <span>Look: Mouse</span><br/><br/>
-      <span style="font-size:16px; color:#cccccc;">Click to capture the pointer and start exploring.</span>
-    </div>
+  <div id="instructions">
+    <span style="font-size: 20px">Click to start exploring</span><br/>
+    <span>Move: WASD or Arrow Keys</span><br/>
+    <span>Move along 4th Dimension: Q/E</span><br/>
+    <span>Look: Mouse</span><br/><br/>
+    <span style="font-size: 16px; color: #ccc;">Click to begin.</span>
   </div>
+  <canvas id="renderCanvas"></canvas>
 
-  <!-- Include Three.js from CDN -->
-  <script type="module"src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.172.0/three.core.min.js"></script>
-  <!-- Include PointerLockControls -->
-  <script src="https://threejs.org/examples/js/controls/PointerLockControls.js"></script>
+  <!-- Include Babylon.js from CDN -->
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
 
   <script>
-    let camera, scene, renderer;
-    let controls;
-    let objects = [];
+    // Set up Babylon.js engine and scene
+    const canvas = document.getElementById('renderCanvas');
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
 
-    // Movement flags
-    let moveForward = false;
-    let moveBackward = false;
+    // Create a basic light and camera
+    const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(0, 1, -10), scene);
+    camera.attachControl(canvas, true);
+
+    const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 0.7;
+
+    // Handle user input
+    let moveUp = false;
+    let moveDown = false;
     let moveLeft = false;
     let moveRight = false;
-    let moveUp = false;   // For fourth dimension movement
-    let moveDown = false; // For fourth dimension movement
+    let fourthDimension = 0;
 
-    const velocity = new THREE.Vector3();
-    const direction = new THREE.Vector3();
-
-    // Fourth dimension position
-    let fourthDimensionPosition = 0;
-
-    init();
-    animate();
-
-    function init() {
-      // Create the scene
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xcccccc);
-      scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
-
-      // Set up the camera
-      camera = new THREE.PerspectiveCamera(
-        75, window.innerWidth / window.innerHeight, 1, 1000
-      );
-
-      // Initialize controls
-      controls = new THREE.PointerLockControls(camera, document.body);
-
-      // Pointer lock event listeners
-      const blocker = document.getElementById('blocker');
-      const instructions = document.getElementById('instructions');
-
-      instructions.addEventListener('click', function () {
-        controls.lock();
-      });
-
-      controls.addEventListener('lock', function () {
-        instructions.style.display = 'none';
-        blocker.style.display = 'none';
-      });
-
-      controls.addEventListener('unlock', function () {
-        blocker.style.display = 'block';
-        instructions.style.display = '';
-      });
-
-      scene.add(controls.getObject());
-
-      // Create floor
-      const floorGeometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
-      floorGeometry.rotateX(- Math.PI / 2);
-
-      // Create floor material
-      const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x0a0a0a, wireframe: true });
-      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-      scene.add(floor);
-
-      // Add objects to the scene
-      const boxGeometry = new THREE.BoxGeometry(20, 20, 20);
-
-      for (let i = 0; i < 100; i++) {
-        const boxMaterial = new THREE.MeshPhongMaterial({
-          color: new THREE.Color(`hsl(${Math.random() * 360}, 50%, 50%)`),
-          transparent: true,
-        });
-        const box = new THREE.Mesh(boxGeometry, boxMaterial);
-        box.position.x = Math.random() * 1600 - 800;
-        box.position.y = 10;
-        box.position.z = Math.random() * 1600 - 800;
-
-        // Assign a random position in the fourth dimension
-        box.userData.initialFourthDimensionPosition = Math.random() * 20 - 10;
-
-        scene.add(box);
-        objects.push(box);
-      }
-
-      // Add lighting
-      const light = new THREE.HemisphereLight(0xffffff, 0x444444);
-      light.position.set(0, 200, 0);
-      scene.add(light);
-
-      const directionalLight = new THREE.DirectionalLight(0xffffff);
-      directionalLight.position.set(0, 200, 100);
-      directionalLight.castShadow = true;
-      directionalLight.shadow.camera.top = 180;
-      directionalLight.shadow.camera.bottom = -100;
-      directionalLight.shadow.camera.left = -120;
-      directionalLight.shadow.camera.right = 120;
-      scene.add(directionalLight);
-
-      // Set up the renderer
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
-
-      // Event listeners
-      window.addEventListener('resize', onWindowResize);
-      document.addEventListener('keydown', onKeyDown);
-      document.addEventListener('keyup', onKeyUp);
-    }
-
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    function onKeyDown(event) {
-      switch (event.code) {
+    const handleKeyDown = (e) => {
+      switch (e.code) {
         case 'ArrowUp':
         case 'KeyW':
-          moveForward = true;
+          moveUp = true;
           break;
-
+        case 'ArrowDown':
+        case 'KeyS':
+          moveDown = true;
+          break;
         case 'ArrowLeft':
         case 'KeyA':
           moveLeft = true;
           break;
-
-        case 'ArrowDown':
-        case 'KeyS':
-          moveBackward = true;
-          break;
-
         case 'ArrowRight':
         case 'KeyD':
           moveRight = true;
           break;
-
         case 'KeyQ':
-          moveUp = true;
+          fourthDimension += 1;
           break;
-
         case 'KeyE':
-          moveDown = true;
+          fourthDimension -= 1;
           break;
       }
-    }
+    };
 
-    function onKeyUp(event) {
-      switch (event.code) {
+    const handleKeyUp = (e) => {
+      switch (e.code) {
         case 'ArrowUp':
         case 'KeyW':
-          moveForward = false;
+          moveUp = false;
           break;
-
+        case 'ArrowDown':
+        case 'KeyS':
+          moveDown = false;
+          break;
         case 'ArrowLeft':
         case 'KeyA':
           moveLeft = false;
           break;
-
-        case 'ArrowDown':
-        case 'KeyS':
-          moveBackward = false;
-          break;
-
         case 'ArrowRight':
         case 'KeyD':
           moveRight = false;
           break;
-
-        case 'KeyQ':
-          moveUp = false;
-          break;
-
-        case 'KeyE':
-          moveDown = false;
-          break;
       }
-    }
+    };
 
-    function updateFourthDimension() {
-      objects.forEach((obj) => {
-        const distance = Math.abs(
-          fourthDimensionPosition - obj.userData.initialFourthDimensionPosition
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    // Create random objects in the scene
+    const objects = [];
+    const createObjects = (num) => {
+      for (let i = 0; i < num; i++) {
+        const sphere = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, { diameter: 1 }, scene);
+        sphere.position = new BABYLON.Vector3(
+          Math.random() * 20 - 10,
+          Math.random() * 2 + 1,
+          Math.random() * 20 - 10
         );
-
-        // Update scale and opacity based on distance in the fourth dimension
-        const scale = 1 - Math.min(distance / 10, 0.9);
-        obj.scale.set(scale, scale, scale);
-
-        obj.material.opacity = scale;
-      });
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-
-      if (controls.isLocked === true) {
-        const delta = 0.1;
-
-        // Update velocity
-        velocity.x -= velocity.x * 10.0 * delta;
-        velocity.z -= velocity.z * 10.0 * delta;
-
-        direction.z = Number(moveForward) - Number(moveBackward);
-        direction.x = Number(moveRight) - Number(moveLeft);
-        direction.normalize();
-
-        if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
-        if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
-
-        controls.moveRight(-velocity.x * delta);
-        controls.moveForward(-velocity.z * delta);
-
-        // Fourth dimension movement
-        if (moveUp) fourthDimensionPosition += 10 * delta;
-        if (moveDown) fourthDimensionPosition -= 10 * delta;
-
-        updateFourthDimension();
+        sphere.initialFourthDimension = Math.random() * 20 - 10;
+        objects.push(sphere);
       }
+    };
 
-      renderer.render(scene, camera);
-    }
+    createObjects(50);
+
+    // Animation loop
+    engine.runRenderLoop(() => {
+      const speed = 0.1;
+      if (moveUp) camera.position.z += speed;
+      if (moveDown) camera.position.z -= speed;
+      if (moveLeft) camera.position.x += speed;
+      if (moveRight) camera.position.x -= speed;
+
+      // Update object scale based on fourth dimension position
+      objects.forEach((obj) => {
+        const distance = Math.abs(fourthDimension - obj.initialFourthDimension);
+        const scale = 1 - Math.min(distance / 10, 0.9);
+        obj.scaling.set(scale, scale, scale);
+      });
+
+      scene.render();
+    });
+
+    // Resize the engine when the window is resized
+    window.addEventListener('resize', () => {
+      engine.resize();
+    });
+
+    // Hide instructions and start animation on click
+    document.getElementById('instructions').addEventListener('click', () => {
+      document.getElementById('instructions').style.display = 'none';
+      canvas.requestPointerLock = canvas.requestPointerLock ||
+                                  canvas.mozRequestPointerLock ||
+                                  canvas.webkitRequestPointerLock;
+      canvas.requestPointerLock();
+    });
   </script>
 </body>
 </html>
