@@ -1,4 +1,4 @@
- body {
+  body {
     margin: 0;
     overflow: hidden;
     font-family: Arial, sans-serif;
@@ -40,13 +40,21 @@
     animation: fadeIn 1s ease-out;
   }
   
-  @keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  
-  
-  
-  
+  :root {
+    --bg-color: #3498db;
+}
+
+body {
+    background-color: var(--bg-color);
+    transition: background-color 0.5s;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #fff;
+}
+
   
   
