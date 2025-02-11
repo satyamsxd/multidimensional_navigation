@@ -192,9 +192,9 @@ const createObjects = (num) => {
     // Keep generating a position until it's far enough from other objects
     while (!positionValid) {
       newPosition = new BABYLON.Vector3(
-        Math.random() * 40 - 20, // X Position (spread over a wider area)
-        Math.random() * 3 + 1,   // Y Position (height)
-        Math.random() * 40 - 20  // Z Position (spread over a wider area)
+        Math.random() * 60 - 30, // X Position (spread over a wider area)
+        Math.random() * 30 - 10,   // Y Position (height)
+        Math.random() * 50 - 30  // Z Position (spread over a wider area)
       );
 
       positionValid = true;
