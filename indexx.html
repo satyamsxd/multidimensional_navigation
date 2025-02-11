@@ -47,33 +47,51 @@
   <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
 
   <script>
-// Set up Babylon.js engine and scene
-const canvas = document.getElementById('renderCanvas');
-const engine = new BABYLON.Engine(canvas, true);
-const scene = new BABYLON.Scene(engine);
+    // Set up Babylon.js engine and scene
+    const canvas = document.getElementById('renderCanvas');
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
 
-// Create a basic light and camera
-const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(0, 1, -10), scene);
-camera.attachControl(canvas, true);
+    // Create a basic light and camera
+    const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(0, 1, -10), scene);
+    camera.attachControl(canvas, true);
 
-const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
-light.intensity = 0.7; // Keep the light intensity constant
-
-// Create multiple spheres
+    const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity="0.7";
 
 
-// Function to change the color of spheres based on some value
 
+
+
+ 
+// Create a sphere
+const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', {diameter: 2}, scene);
+const sphereMaterial = new BABYLON.StandardMaterial('sphereMaterial', scene);
+sphere.material = sphereMaterial;
+
+// Function to change the sphere color based on some value
+const changeSphereColor = (value) => {
+    let color;
+    // Change color based on the value
+    if (value < 0.3) {
+        color = new BABYLON.Color3(0, 0, 1); // Blue for low value
+    } else if (value < 0.7) {
+        color = new BABYLON.Color3(0, 1, 0); // Green for moderate value
+    } else {
+        color = new BABYLON.Color3(1, 0, 0); // Red for high value
+    }
+    sphereMaterial.diffuseColor = color;
+};
 
 // Initial color update
-changeSpheresColor(1.9); // Set the initial value
+changeSphereColor(0.7); // Set the initial value
 
-// Update the spheres color whenever the value changes
+// Update the sphere color whenever the value changes
 // Here you can define how you want to change the value over time or with user input
 // For example, you can simulate it with a random value every second
 setInterval(() => {
     const randomValue = Math.random(); // Simulate a changing value
-    changeSpheresColor(randomValue);
+    changeSphereColor(randomValue);
 }, 1000);
 
 // Render loop
@@ -145,51 +163,70 @@ window.addEventListener('resize', () => {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
-    // Create random objects in the scene
-    const objects = [];
-    const createObjects = (num) => {
-      for (let i = 0; i < num; i++) {
-        const sphere = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, { diameter: 1 }, scene);
-        const sphereMaterial = new BABYLON.StandardMaterial(`sphereMaterial${i}`, scene);
+    // Create random objects in the scene with spacing
+const objects = [];
+const minSpacing = 3; // Minimum distance between objects
 
-        sphere.material = sphereMaterial;
-        sphere.position = new BABYLON.Vector3(
-          Math.random() * 20 - 10,
-          Math.random() * 2 + 1,
-          Math.random() * 20 - 10
-        );
-        sphere.initialFourthDimension = Math.random() * 20 - 10;
-        objects.push(sphere);
-      }
-    };
+const createObjects = (num) => {
+  for (let i = 0; i < num; i++) {
+    let mesh;
 
-    createObjects(50);
-
-    const changeSpheresColor = (value) => {
-    let color;
-    // Change color based on the value
-    if (value < 0.3) {
-        color = new BABYLON.Color3(0, 0, 1); // Blue for low value
-    } else if (value < 0.7) {
-        color = new BABYLON.Color3(0, 1, 0); // Green for moderate value
+    // Randomly decide whether to create a sphere, cube, or cuboid
+    const type = Math.random();
+    
+    if (type < 0.33) {
+      mesh = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, { diameter: Math.random() * 2 + 1 }, scene);
+    } else if (type < 0.66) {
+      mesh = BABYLON.MeshBuilder.CreateBox(`cube${i}`, { size: Math.random() * 2 + 1 }, scene);
     } else {
-        color = new BABYLON.Color3(1, 0, 0); // Red for high value
+      mesh = BABYLON.MeshBuilder.CreateBox(`cuboid${i}`, { 
+        width: Math.random() * 3 + 1, 
+        height: Math.random() * 2 + 1, 
+        depth: Math.random() * 3 + 1 
+      }, scene);
     }
 
-    // Update the color of all spheres
-    objects.forEach(sphere => {
-        sphere.material.diffuseColor = color;
-    });
+    let positionValid = false;
+    let newPosition;
+
+    // Keep generating a position until it's far enough from other objects
+    while (!positionValid) {
+      newPosition = new BABYLON.Vector3(
+        Math.random() * 40 - 20, // X Position (spread over a wider area)
+        Math.random() * 3 + 1,   // Y Position (height)
+        Math.random() * 40 - 20  // Z Position (spread over a wider area)
+      );
+
+      positionValid = true;
+      for (let obj of objects) {
+        if (BABYLON.Vector3.Distance(obj.position, newPosition) < minSpacing) {
+          positionValid = false;
+          break;
+        }
+      }
+    }
+
+    mesh.position = newPosition;
+
+    // Random rotation
+    mesh.rotation = new BABYLON.Vector3(
+      Math.random() * Math.PI,
+      Math.random() * Math.PI,
+      Math.random() * Math.PI
+    );
+
+    mesh.initialFourthDimension = Math.random() * 20 - 10;
+    objects.push(mesh);
+  }
 };
 
-
-
+createObjects(200); // Creates 500 objects with spacing
 
 
 
     // Animation loop
     engine.runRenderLoop(() => {
-      const speed = 0.1;
+      const speed = 0.08;
       if (moveUp) camera.position.z += speed;
       if (moveDown) camera.position.z -= speed;
       if (moveLeft) camera.position.x += speed;
