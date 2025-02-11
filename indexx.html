@@ -163,22 +163,66 @@ window.addEventListener('resize', () => {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
-    // Create random objects in the scene
-    const objects = [];
-    const createObjects = (num) => {
-      for (let i = 0; i < num; i++) {
-        const sphere = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, { diameter: 1 }, scene);
-        sphere.position = new BABYLON.Vector3(
-          Math.random() * 20 - 10,
-          Math.random() * 2 + 1,
-          Math.random() * 20 - 10
-        );
-        sphere.initialFourthDimension = Math.random() * 20 - 10;
-        objects.push(sphere);
-      }
-    };
+    // Create random objects in the scene with spacing
+const objects = [];
+const minSpacing = 3; // Minimum distance between objects
 
-    createObjects(500);
+const createObjects = (num) => {
+  for (let i = 0; i < num; i++) {
+    let mesh;
+
+    // Randomly decide whether to create a sphere, cube, or cuboid
+    const type = Math.random();
+    
+    if (type < 0.33) {
+      mesh = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, { diameter: Math.random() * 2 + 1 }, scene);
+    } else if (type < 0.66) {
+      mesh = BABYLON.MeshBuilder.CreateBox(`cube${i}`, { size: Math.random() * 2 + 1 }, scene);
+    } else {
+      mesh = BABYLON.MeshBuilder.CreateBox(`cuboid${i}`, { 
+        width: Math.random() * 3 + 1, 
+        height: Math.random() * 2 + 1, 
+        depth: Math.random() * 3 + 1 
+      }, scene);
+    }
+
+    let positionValid = false;
+    let newPosition;
+
+    // Keep generating a position until it's far enough from other objects
+    while (!positionValid) {
+      newPosition = new BABYLON.Vector3(
+        Math.random() * 40 - 20, // X Position (spread over a wider area)
+        Math.random() * 3 + 1,   // Y Position (height)
+        Math.random() * 40 - 20  // Z Position (spread over a wider area)
+      );
+
+      positionValid = true;
+      for (let obj of objects) {
+        if (BABYLON.Vector3.Distance(obj.position, newPosition) < minSpacing) {
+          positionValid = false;
+          break;
+        }
+      }
+    }
+
+    mesh.position = newPosition;
+
+    // Random rotation
+    mesh.rotation = new BABYLON.Vector3(
+      Math.random() * Math.PI,
+      Math.random() * Math.PI,
+      Math.random() * Math.PI
+    );
+
+    mesh.initialFourthDimension = Math.random() * 20 - 10;
+    objects.push(mesh);
+  }
+};
+
+createObjects(200); // Creates 500 objects with spacing
+
+
 
     // Animation loop
     engine.runRenderLoop(() => {
