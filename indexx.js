@@ -25,3 +25,7 @@
 } else {
     console.log('AmbientLightSensor is not supported in this browser.');
 }
+export default function Home() {
+    return <h1>Hello, Next.js!</h1>;
+  }
+  
