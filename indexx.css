@@ -1,60 +1,156 @@
-  body {
-    margin: 0;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #2b5876, #4e4376);
+/* #instructions {
+  background: linear-gradient(135deg, #282c34, #3a3f47);
+  border-radius: 15px;
+  padding: 40px 50px;
+  max-width: 500px;
+  margin: 20px auto;
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-20px);
   }
-  #instructions {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #33ff00;
-    padding: 25px;
-    border-radius: 10px;
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+#instructions span {
+  display: block;
+  color: #40ff00;
+  margin: 15px 0;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+#instructions span:first-child {
+  font-size: 50px;
+  color: #61dafb;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(1.1);
+  }
+  100% {
+      transform: scale(1);
+  }
+}
+
+#instructions span:hover {
+  transform: translateX(10px);
+}
+
+#instructions span:last-child {
+  font-size: 16px;
+  color: #f2ff00;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#instructions span:last-child:hover {
+  color: #ff5722;
+  text-shadow: 0 0 10px #ff5722;
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+#instructions {
+    background: linear-gradient(135deg, rgba(40, 44, 52, 0.8), rgba(58, 63, 71, 0.8)), 
+                url('star.webp');
+    background-size: cover;
+    background-position: center;
+    border-radius: 25px;
+    padding: 40px;
+    max-width: 700px;
+    margin: 40px auto;
     text-align: center;
-    opacity: 1;
-    transition: opacity 1s ease-out;
-  }
-  #instructions span {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    animation: fadeIn 2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#instructions span {
+    display: block;
+    margin: 20px 0;
+    transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+}
+
+#instructions span:first-child {
+    font-size: 60px;
+    color: #ffe259;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#instructions span:nth-child(2),
+#instructions span:nth-child(3),
+#instructions span:nth-child(4) {
+    font-size: 22px;
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#instructions span:nth-child(2):hover,
+#instructions span:nth-child(3):hover,
+#instructions span:nth-child(4):hover {
+    color: #ffe259;
+    text-shadow: 0 0 10px #ffe259;
+}
+
+#instructions span:last-child {
     font-size: 20px;
-    text-shadow: 0 0 10px rgb(9, 255, 0), 0 0 20px rgb(46, 0, 253), 0 0 30px rgb(241, 0, 0);
-    transition: text-shadow 0.3s ease-in-out;
-  }
-  
-  #instructions span:hover {
-    text-shadow: 0 0 15px rgb(0, 255, 21), 0 0 25px rgb(119, 255, 0), 0 0 35px rgb(0, 34, 255);
-  }
-  #instructions {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgb(6, 3, 3);
-    color: #1aff00;
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    animation: fadeIn 1s ease-out;
-  }
-  
-  :root {
-    --bg-color: #3498db;
+    color: #f2ff00;
+    cursor: pointer;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+    animation: fadeInUp 1.5s ease-out;
 }
 
-body {
-    background-color: var(--bg-color);
-    transition: background-color 0.5s;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    color: #fff;
+#instructions span:last-child:hover {
+    color: #ff5722;
+    text-shadow: 0 0 15px #ff5722;
+    transform: scale(1.1);
 }
 
-  
-  
