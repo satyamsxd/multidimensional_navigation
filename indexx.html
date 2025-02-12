@@ -171,6 +171,72 @@ window.addEventListener('resize', () => {
 });
 
 
+const createAndColorCubes = (numCubes) => {
+    const cubes = [];
+    for (let i = 0; i < numCubes; i++) {
+        const cube = BABYLON.MeshBuilder.CreateBox(`cube${i}`, { size: 2 }, scene);
+        const cubeMaterial = new BABYLON.StandardMaterial(`cubeMaterial${i}`, scene);
+        cube.material = cubeMaterial;
+
+        // Generate random positions within a range
+        const minX = -10, maxX = 10;
+        const minY = -5, maxY = 5;
+        const minZ = -10, maxZ = 10;
+
+        cube.position.x = Math.random() * (maxX - minX) + minX;
+        cube.position.y = Math.random() * (maxY - minY) + minY;
+        cube.position.z = Math.random() * (maxZ - minZ) + minZ;
+
+        // Generate a random color
+        const color = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+        cubeMaterial.diffuseColor = color;
+
+        cubes.push(cube);
+    }
+};
+
+// Example of creating and coloring multiple cubes
+createAndColorCubes(50); // This will create 5 cubes with random colors and positions
+
+// Render loop
+engine.runRenderLoop(() => {
+  scene.render();
+});
+
+
+const createAndColorCuboids = (numCuboids) => {
+    const cuboids = [];
+    for (let i = 0; i < numCuboids; i++) {
+        const cuboid = BABYLON.MeshBuilder.CreateBox(`cuboid${i}`, { width: 2, height: 3, depth: 1 }, scene);
+        const cuboidMaterial = new BABYLON.StandardMaterial(`cuboidMaterial${i}`, scene);
+        cuboid.material = cuboidMaterial;
+
+        // Generate random positions within a range
+        const minX = -10, maxX = 10;
+        const minY = -5, maxY = 5;
+        const minZ = -10, maxZ = 10;
+
+        cuboid.position.x = Math.random() * (maxX - minX) + minX;
+        cuboid.position.y = Math.random() * (maxY - minY) + minY;
+        cuboid.position.z = Math.random() * (maxZ - minZ) + minZ;
+
+        // Generate a random color
+        const color = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+        cuboidMaterial.diffuseColor = color;
+
+        cuboids.push(cuboid);
+    }
+};
+
+// Example of creating and coloring multiple cuboids
+createAndColorCuboids(50); // This will create 5 cuboids with random colors and positions
+
+// Render loop
+engine.runRenderLoop(() => {
+    scene.render();
+});
+
+
 
 
 
