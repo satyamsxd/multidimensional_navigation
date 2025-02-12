@@ -69,7 +69,40 @@ const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', {diameter: 2}, scene);
 const sphereMaterial = new BABYLON.StandardMaterial('sphereMaterial', scene);
 sphere.material = sphereMaterial;
 
+// Function to change the sphere color based on some value
+const changeSphereColor = (value) => {
+    let color;
+    // Change color based on the value
+    if (value < 0.3) {
+        color = new BABYLON.Color3(0, 0, 1); // Blue for low value
+    } else if (value < 0.7) {
+        color = new BABYLON.Color3(0, 1, 0); // Green for moderate value
+    } else {
+        color = new BABYLON.Color3(1, 0, 0); // Red for high value
+    }
+    sphereMaterial.diffuseColor = color;
+};
 
+// Initial color update
+changeSphereColor(0.7); // Set the initial value
+
+// Update the sphere color whenever the value changes
+// Here you can define how you want to change the value over time or with user input
+// For example, you can simulate it with a random value every second
+setInterval(() => {
+    const randomValue = Math.random(); // Simulate a changing value
+    changeSphereColor(randomValue);
+}, 1000);
+
+// Render loop
+engine.runRenderLoop(() => {
+    scene.render();
+});
+
+// Resize the engine on window resize
+window.addEventListener('resize', () => {
+    engine.resize();
+});
 
     // Handle user input
     let moveUp = false;
@@ -130,117 +163,6 @@ sphere.material = sphereMaterial;
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
-    const spheres = [];
-for (let i = 0; i < 51; i++) {
-    const sphere = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, {diameter: 2}, scene);
-    const sphereMaterial = new BABYLON.StandardMaterial(`sphereMaterial${i}`, scene);
-    sphere.material = sphereMaterial;
-
-    // Generate random positions within a range
-    const minX = -10, maxX = 10;
-    const minY = -5, maxY = 5;
-    const minZ = -10, maxZ = 10;
-
-    sphere.position.x = Math.random() * (maxX - minX) + minX;
-    sphere.position.y = Math.random() * (maxY - minY) + minY;
-    sphere.position.z = Math.random() * (maxZ - minZ) + minZ;
-
-    // Generate a random value and change the color of the sphere based on this value
-    const value = Math.random(); // Random value between 0 and 1
-    let color;
-    if (value < 0.3) {
-        color = new BABYLON.Color3(0, 0, 1); // Blue for low value
-    } else if (value < 0.7) {
-        color = new BABYLON.Color3(0, 1, 0); // Green for moderate value
-    } else {
-        color = new BABYLON.Color3(1, 0, 0); // Red for high value
-    }
-    sphereMaterial.diffuseColor = color;
-
-    spheres.push(sphere);
-}
-
-// Render loop
-engine.runRenderLoop(() => {
-    scene.render();
-});
-
-// Resize the engine on window resize
-window.addEventListener('resize', () => {
-    engine.resize();
-});
-
-
-const createAndColorCubes = (numCubes) => {
-    const cubes = [];
-    for (let i = 0; i < numCubes; i++) {
-        const cube = BABYLON.MeshBuilder.CreateBox(`cube${i}`, { size: 2 }, scene);
-        const cubeMaterial = new BABYLON.StandardMaterial(`cubeMaterial${i}`, scene);
-        cube.material = cubeMaterial;
-
-        // Generate random positions within a range
-        const minX = -10, maxX = 10;
-        const minY = -5, maxY = 5;
-        const minZ = -10, maxZ = 10;
-
-        cube.position.x = Math.random() * (maxX - minX) + minX;
-        cube.position.y = Math.random() * (maxY - minY) + minY;
-        cube.position.z = Math.random() * (maxZ - minZ) + minZ;
-
-        // Generate a random color
-        const color = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
-        cubeMaterial.diffuseColor = color;
-
-        cubes.push(cube);
-    }
-};
-
-// Example of creating and coloring multiple cubes
-createAndColorCubes(50); // This will create 5 cubes with random colors and positions
-
-// Render loop
-engine.runRenderLoop(() => {
-  scene.render();
-});
-
-
-const createAndColorCuboids = (numCuboids) => {
-    const cuboids = [];
-    for (let i = 0; i < numCuboids; i++) {
-        const cuboid = BABYLON.MeshBuilder.CreateBox(`cuboid${i}`, { width: 2, height: 3, depth: 1 }, scene);
-        const cuboidMaterial = new BABYLON.StandardMaterial(`cuboidMaterial${i}`, scene);
-        cuboid.material = cuboidMaterial;
-
-        // Generate random positions within a range
-        const minX = -10, maxX = 10;
-        const minY = -5, maxY = 5;
-        const minZ = -10, maxZ = 10;
-
-        cuboid.position.x = Math.random() * (maxX - minX) + minX;
-        cuboid.position.y = Math.random() * (maxY - minY) + minY;
-        cuboid.position.z = Math.random() * (maxZ - minZ) + minZ;
-
-        // Generate a random color
-        const color = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
-        cuboidMaterial.diffuseColor = color;
-
-        cuboids.push(cuboid);
-    }
-};
-
-// Example of creating and coloring multiple cuboids
-createAndColorCuboids(50); // This will create 5 cuboids with random colors and positions
-
-// Render loop
-engine.runRenderLoop(() => {
-    scene.render();
-});
-
-
-
-
-
-
     // Create random objects in the scene with spacing
 const objects = [];
 const minSpacing = 3; // Minimum distance between objects
@@ -254,14 +176,40 @@ const createObjects = (num) => {
     
     if (type < 0.33) {
       mesh = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, { diameter: Math.random() * 2 + 1 }, scene);
+      let sphereMaterial = new BABYLON.StandardMaterial(`sphereMaterial${i}`, scene);
+
+    // Assign a random color
+       sphereMaterial.emissiveColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+
+    // Apply the material to the sphere
+       mesh.material = sphereMaterial;   
+      
     } else if (type < 0.66) {
       mesh = BABYLON.MeshBuilder.CreateBox(`cube${i}`, { size: Math.random() * 2 + 1 }, scene);
+      
+
+    // Create a new material for each cube
+      let cubeMaterial = new BABYLON.StandardMaterial(`cubeMaterial${i}`, scene);
+
+    // Assign a random color
+      cubeMaterial.emissiveColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+
+    // Apply the material to the cube
+      mesh.material = cubeMaterial;
     } else {
       mesh = BABYLON.MeshBuilder.CreateBox(`cuboid${i}`, { 
         width: Math.random() * 3 + 1, 
         height: Math.random() * 2 + 1, 
         depth: Math.random() * 3 + 1 
       }, scene);
+
+      let cuboidMaterial = new BABYLON.StandardMaterial(`cuboidMaterial${i}`, scene);
+
+// Assign a random color
+      cuboidMaterial.emissiveColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+
+// Apply the material to the cuboid
+      mesh.material = cuboidMaterial;
     }
 
     let positionValid = false;
