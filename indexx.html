@@ -290,6 +290,32 @@ createObjects(200); // Creates 500 objects with spacing
     window.addEventListener('resize', () => {
       engine.resize();
     });
+    // Create a skybox
+const skybox = BABYLON.MeshBuilder.CreateBox("skybox", { size: 1000 }, scene);
+
+// Create a material for the skybox
+const skyboxMaterial = new BABYLON.StandardMaterial("skyboxMaterial", scene);
+skyboxMaterial.backFaceCulling = false; // Ensure the inside of the box is visible
+skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("path/to/your/skybox/textures", scene);
+skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE; // Set the texture mode to skybox
+skyboxMaterial.disableLighting = true; // Disable lighting for the skybox
+
+// Apply the material to the skybox
+skybox.material = skyboxMaterial;
+
+// Create a background material
+const backgroundMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", scene);
+backgroundMaterial.useRGBColor = false; // Use the texture as-is
+backgroundMaterial.diffuseTexture = new BABYLON.Texture("star.webp", scene);
+backgroundMaterial.diffuseTexture.hasAlpha = false; // Ensure the texture has no alpha
+
+// Set the background material to the scene's clear color
+scene.clearColor = new BABYLON.Color4(0, 0, 0, 1); // Optional: Set a fallback clear color
+scene.backgroundMaterial = backgroundMaterial;
+
+
+
+
 
     // Hide instructions and start animation on click
     document.getElementById('instructions').addEventListener('click', () => {
