@@ -176,14 +176,40 @@ const createObjects = (num) => {
     
     if (type < 0.33) {
       mesh = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, { diameter: Math.random() * 2 + 1 }, scene);
+      let sphereMaterial = new BABYLON.StandardMaterial(`sphereMaterial${i}`, scene);
+
+    // Assign a random color
+       sphereMaterial.emissiveColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+
+    // Apply the material to the sphere
+       mesh.material = sphereMaterial;   
+      
     } else if (type < 0.66) {
       mesh = BABYLON.MeshBuilder.CreateBox(`cube${i}`, { size: Math.random() * 2 + 1 }, scene);
+      
+
+    // Create a new material for each cube
+      let cubeMaterial = new BABYLON.StandardMaterial(`cubeMaterial${i}`, scene);
+
+    // Assign a random color
+      cubeMaterial.emissiveColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+
+    // Apply the material to the cube
+      mesh.material = cubeMaterial;
     } else {
       mesh = BABYLON.MeshBuilder.CreateBox(`cuboid${i}`, { 
         width: Math.random() * 3 + 1, 
         height: Math.random() * 2 + 1, 
         depth: Math.random() * 3 + 1 
       }, scene);
+
+      let cuboidMaterial = new BABYLON.StandardMaterial(`cuboidMaterial${i}`, scene);
+
+// Assign a random color
+      cuboidMaterial.emissiveColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+
+// Apply the material to the cuboid
+      mesh.material = cuboidMaterial;
     }
 
     let positionValid = false;
