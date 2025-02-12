@@ -95,6 +95,24 @@ setInterval(() => {
 
 // Render loop
 engine.runRenderLoop(() => {
+  const speed = 0.08;
+if (moveUp) camera.position.z += speed;
+if (moveDown) camera.position.z -= speed;
+if (moveLeft) camera.position.x += speed;
+if (moveRight) camera.position.x -= speed;
+
+// Update object scale based on fourth dimension position
+objects.forEach((obj) => {
+    const distance = Math.abs(fourthDimension - obj.initialFourthDimension);
+    const scale = 1 - Math.min(distance / 10, 0.9);
+    obj.scaling.set(scale, scale, scale);
+
+    // Rotate the object around its X, Y, and Z axes
+    obj.rotation.x += 0.01; // Adjust the rotation speed as needed
+    obj.rotation.y += 0.01; // Adjust the rotation speed as needed
+    obj.rotation.z += 0.01; // Adjust the rotation speed as needed
+});
+
     scene.render();
 });
 
