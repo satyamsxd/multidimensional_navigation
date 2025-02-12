@@ -95,7 +95,7 @@ setInterval(() => {
 
 // Render loop
 engine.runRenderLoop(() => {
-  const speed = 0.06;
+  const speed = 0.07;
 if (moveUp) camera.position.z += speed;
 if (moveDown) camera.position.z -= speed;
 if (moveLeft) camera.position.x += speed;
@@ -108,9 +108,9 @@ objects.forEach((obj) => {
     obj.scaling.set(scale, scale, scale);
 
     // Rotate the object around its X, Y, and Z axes
-    obj.rotation.x += 0.01; // Adjust the rotation speed as needed
-    obj.rotation.y += 0.01; // Adjust the rotation speed as needed
-    obj.rotation.z += 0.01; // Adjust the rotation speed as needed
+    obj.rotation.x += 0.004; // Adjust the rotation speed as needed
+    obj.rotation.y += 0.004; // Adjust the rotation speed as needed
+    obj.rotation.z += 0.004; // Adjust the rotation speed as needed
 });
 
     scene.render();
