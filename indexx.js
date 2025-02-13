@@ -1,27 +1,17 @@
- if ('AmbientLightSensor' in window) {
-    const sensor = new AmbientLightSensor();
+const express = require('express');
+const path = require('path');
 
-    sensor.onreading = () => {
-        let lux = sensor.illuminance;
-        let color;
+const app = express();
 
-        // Change color based on light intensity
-        if (lux < 100) {
-            color = '#2c3e50'; // Dark Blue for low light
-        } else if (lux < 500) {
-            color = '#3498db'; // Blue for moderate light
-        } else {
-            color = '#ecf0f1'; // Light Gray for bright light
-        }
+// Serve static files from the current directory
+app.use(express.static(__dirname));
 
-        document.documentElement.style.setProperty('--bg-color', color);
-    };
+// Serve indexx.html when accessing "/"
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'indexx.html'));
+});
 
-    sensor.onerror = (event) => {
-        console.log(event.error.name, event.error.message);
-    };
-
-    sensor.start();
-} else {
-    console.log('AmbientLightSensor is not supported in this browser.');
-}
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`✅ Server running at http://localhost:${PORT}`);
+});
